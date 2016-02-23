@@ -7,7 +7,7 @@ module.exports = {
     devtool:debug ? "inline-sourcemap" : null,
     entry: './src/js/client.js',
     module: {
-        loaders:[ 
+        loaders:[
             {
                 test: /\.js?$/,
                 exclude: /node_modules|bower_components/,
@@ -20,7 +20,7 @@ module.exports = {
         ]
     },
     output: {
-        path: __dirname + "/src",
+        path: path.resolve(__dirname + '/client/src'),
         filename: "client.min.js"
     },
     plugins: debug ? [] : [

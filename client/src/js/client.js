@@ -1,18 +1,6 @@
 import React from "react";
 import ReactDom from "react-dom";
 
-// var CHALLENGES = [
-//     //TODO Get from DB, use Challenge objects (not yet defined)
-//     {level:1, text: "hello, world"},
-//     {level:2, text:"h e l l o , w o r l d!"},
-//     {level:3, text:"meepmoop"},
-//     {level:4, text:"asdasdasd"},
-//     {level:5, text:"asdasdasfgfd"},
-//     {level:6, text:"asdafsgf"},
-//     {level:7, text:"srfgrfsg"},
-//     {level:8, text:"dfgdfgdfh"}
-//     ]
-
 class ChallengeListRow extends React.Component{
     render() {
         return (
@@ -22,9 +10,64 @@ class ChallengeListRow extends React.Component{
             </div>
         )
     }
-} 
+}
 
-class ChallengeList extends React.Component{
+
+class Round extends React.Component {
+    getInitialState() {
+        let currentChallenge = undefined
+
+    }
+
+    render() {
+        <div>
+            <h1>Round started</h1>
+        </div>
+    }
+}
+
+var App = React.createClass({
+    getInitialState: function() {
+        return {
+            initialChallenges: [],
+            completed: false,
+            currLevel: 0,
+            highScore: 0
+        }
+    },
+    componentDidMount() {
+        this.serverRequest = $.getJSON(this.props.challengeSource, function(result) {
+            this.setState({
+                initialChallenges: result
+            });
+        }.bind(this))
+    },
+
+    render() {
+        return (
+            <div>
+                <h1></h1>
+                <Entry labelText="Enter Regex" id="entryField" inputType="text"/>
+                <br />
+                <ChallengeList challenges={this.state.initialChallenges}/>
+                <Round></Round>
+            </div>
+        )
+    }
+});
+
+var Entry = React.createClass({
+    render() {
+        return (
+            <div>
+                <input id={this.props.id} type={this.props.inputType} />
+                <label for={this.props.id}>{this.props.labelText}</label>
+            </div>
+            )
+    }
+});
+
+var ChallengeList = React.createClass({
     render() {
         let rows = [];
         this.props.challenges.forEach(function(x, y) {
@@ -36,41 +79,8 @@ class ChallengeList extends React.Component{
             </div>
             )
     }
-}
-
-class Layout extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = 
-            {
-                completed: false,
-                currLevel: 0,
-                highScore: 0
-            }
-    }
-    
-    render() {
-        return (
-            <div>
-                <Entry labelText="Entry" id="entryField" inputType="text"/>
-                <ChallengeList challenges={CHALLENGES}/>
-            </div>
-        )
-    }
-}
-
-class Entry extends React.Component {
-    render() {
-        return (
-            <div>
-                <input id={this.props.id} type={this.props.inputType} />
-                <label for={this.props.id}>{this.props.labelText}</label>
-            </div>
-            )
-    }
-}
-
+});
 
 const app = document.getElementById("app")
 
-ReactDom.render(<Layout/>, app);
+ReactDom.render(<App challengeSource='/challenges' />, app);

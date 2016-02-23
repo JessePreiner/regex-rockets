@@ -22,7 +22,9 @@
     "webpack": "1.12.9",
     "webpack-dev-server": "^1.14.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^1.12.9"
+  },
   "scripts": {
     "test": "echo \"None specified\" && exit 1"
   }

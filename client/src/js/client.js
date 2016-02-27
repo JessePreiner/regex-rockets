@@ -1,60 +1,42 @@
 import React from "react";
 import ReactDom from "react-dom";
 
-class ChallengeListRow extends React.Component{
-    render() {
-        return (
-            <div>
-                <span class="challengeLevel">{this.props.level}</span>
-                <span class="challengeListItem" id={this.props.id}>{this.props.text}</span>
-            </div>
-        )
-    }
-}
 
-
-class Round extends React.Component {
-    getInitialState() {
-        let currentChallenge = undefined
-
-    }
-
-    render() {
-        <div>
-            <h1>Round started</h1>
-        </div>
-    }
-}
 
 var App = React.createClass({
     getInitialState: function() {
         return {
-            initialChallenges: [],
             completed: false,
             currLevel: 0,
             highScore: 0
         }
     },
-    componentDidMount() {
-        this.serverRequest = $.getJSON(this.props.challengeSource, function(result) {
-            this.setState({
-                initialChallenges: result
-            });
-        }.bind(this))
-    },
 
     render() {
         return (
             <div>
-                <h1></h1>
+                <Round currentChallenge={this.props.challenges.shift()}></Round>
                 <Entry labelText="Enter Regex" id="entryField" inputType="text"/>
                 <br />
-                <ChallengeList challenges={this.state.initialChallenges}/>
-                <Round></Round>
+                <ChallengeList challenges={this.props.challenges}/>
             </div>
         )
     }
 });
+
+var Round = React.createClass({
+
+    render: function () {
+
+        return (
+        <div>
+            <h1>Round started</h1>
+            <h2>Current Challenge: {this.props.currentChallenge.text}</h2>
+            
+        </div>
+        )
+    }
+})
 
 var Entry = React.createClass({
     render() {
@@ -70,9 +52,10 @@ var Entry = React.createClass({
 var ChallengeList = React.createClass({
     render() {
         let rows = [];
-        this.props.challenges.forEach(function(x, y) {
-            rows.push(<ChallengeListRow key={y} level={x.level} text={x.text} />)
+        rows = this.props.challenges.map(function(x,y) {
+            return <ChallengeListRow key={y} level={x.level} text={x.text} />
         });
+
         return (
             <div>
                 {rows}
@@ -81,6 +64,22 @@ var ChallengeList = React.createClass({
     }
 });
 
+
+class ChallengeListRow extends React.Component{
+    render() {
+        return (
+            <div>
+                <span class="challengeLevel">{this.props.level}</span>
+                <span class="challengeListItem" id={this.props.id}>{this.props.text}</span>
+            </div>
+        )
+    }
+}
+
 const app = document.getElementById("app")
 
-ReactDom.render(<App challengeSource='/challenges' />, app);
+let serverResponse = $.getJSON('/challenges', function(result) {
+    ReactDom.render(<App challenges={result} />, app);
+})
+
+
